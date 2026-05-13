@@ -1,0 +1,11 @@
+export type { Color, Cell, Board, Solution, Difficulty, Puzzle, UndoEntry, SavedMatch } from './types'
+
+export { CLUE_TARGETS, STARTING_HINTS, UNDO_LIMITS } from './difficulty'
+export { solve, countSolutions, randomSolve, isValidColor } from './solver'
+export { generate, generateSolved, countClues, digitDistribution } from './generator'
+export { findConflictCells } from './conflicts'
+export { nextHint } from './hint'
+export type { HintInput, HintResult } from './hint'
+export { loadMatch, saveMatch, clearMatch } from './storage'
+export { loadStats, recordStart, recordFinish, clearStats, summarize } from './stats'
+export type { CompletedMatch, Stats, StatsSummary } from './stats'

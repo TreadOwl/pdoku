@@ -1,26 +1,214 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: oklch(0.34 0.05 196);
+  --foreground: oklch(0.96 0.04 140);
+  --primary: oklch(0.4 0.05 66);
+  --secondary: oklch(0.92 0.05 75);
+  --primary-foreground: oklch(0.6 0.05 44);
+  --secondary-foreground: oklch(0.5 0.05 45);
+  --card: oklch(0.91 0.049 165);
+  --card-accent: oklch(0.97 0.03 97);
+  --card-foreground: oklch(0.5 0.05 195);
+  --popover: oklch(0.97 0.03 97);
+  --popover-foreground: oklch(0.145 0 0);
+  --muted: oklch(0.96 0.04 140);
+  --muted-foreground: oklch(0.56 0.04 40);
+  --accent: oklch(0.91 0.049 165);
+  --accent-foreground: oklch(0.5 0.05 195);
+  --destructive: oklch(0.57 0.25 27.3);
+  --border: oklch(0.92 0.05 75);
+  --input: oklch(0.92 0.05 75);
+  --ring: oklch(0.7 0 0);
+  --chart-1: oklch(0.88 0 0);
+  --chart-2: oklch(0.55 0 0);
+  --chart-3: oklch(0.44 0 0);
+  --chart-4: oklch(0.37 0 0);
+  --chart-5: oklch(0.27 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.98 0 0);
+  --sidebar-foreground: oklch(0.15 0 0);
+  --sidebar-primary: oklch(0.2 0 0);
+  --sidebar-primary-foreground: oklch(0.98 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.2 0 0);
+  --sidebar-border: oklch(0.92 0 0);
+  --sidebar-ring: oklch(0.7 0 0);
+
+  --sudoku-1: oklch(0.70 0.20 25);
+  --sudoku-2: oklch(0.78 0.16 60);
+  --sudoku-3: oklch(0.88 0.18 95);
+  --sudoku-4: oklch(0.78 0.20 140);
+  --sudoku-5: oklch(0.72 0.15 180);
+  --sudoku-6: oklch(0.72 0.15 230);
+  --sudoku-7: oklch(0.60 0.22 280);
+  --sudoku-8: oklch(0.65 0.20 320);
+  --sudoku-9: oklch(0.72 0.20 350);
+
+  --board-line: oklch(0.25 0.04 196);
+  --board-line-strong: oklch(0.15 0.04 196);
+  --cell-empty: oklch(0.54 0.04 196);
+  --cell-given-ring: oklch(0.20 0.04 196);
+  --cell-focus-tint: oklch(0.96 0.04 140 / 0.18);
+  --cell-focus-ring: oklch(0.66 0.04 140);
+  --cell-error: oklch(0.62 0.25 27);
+  --cell-hint-dot: oklch(0.20 0.04 196);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-card: var(--card);
+  --color-card-accent: var(--card-accent);
+  --font-heading: var(--font-sans);
+  --font-sans: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-sudoku-1: var(--sudoku-1);
+  --color-sudoku-2: var(--sudoku-2);
+  --color-sudoku-3: var(--sudoku-3);
+  --color-sudoku-4: var(--sudoku-4);
+  --color-sudoku-5: var(--sudoku-5);
+  --color-sudoku-6: var(--sudoku-6);
+  --color-sudoku-7: var(--sudoku-7);
+  --color-sudoku-8: var(--sudoku-8);
+  --color-sudoku-9: var(--sudoku-9);
+  --color-board-line: var(--board-line);
+  --color-board-line-strong: var(--board-line-strong);
+  --color-cell-empty: var(--cell-empty);
+  --color-cell-given-ring: var(--cell-given-ring);
+  --color-cell-focus-tint: var(--cell-focus-tint);
+  --color-cell-focus-ring: var(--cell-focus-ring);
+  --color-cell-error: var(--cell-error);
+  --color-cell-hint-dot: var(--cell-hint-dot);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-quicksand);
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+/* CRT scan-line overlay */
+.scan-lines {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px 2px,
+    oklch(0 0 0 / 0.07) 2px 4px
+  );
+}
+
+/* Edge vignette */
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 110% 110% at 50% 50%,
+    transparent 40%,
+    oklch(0 0 0 / 0.5) 100%
+  );
+}
+
+/* Pixel-art button shadow */
+.btn-pixel {
+  box-shadow: 4px 4px 0 0 var(--foreground);
+  transition:
+    box-shadow 80ms ease,
+    transform 80ms ease,
+    color 150ms ease,
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+.btn-pixel:not(:disabled):active {
+  box-shadow: 2px 2px 0 0 var(--foreground);
+  transform: translate(2px, 2px);
+}
+
+/* Stats drawer panel gradient */
+.drawer-panel-gradient::before {
+  background: linear-gradient(to bottom, var(--popover), var(--secondary), var(--primary)) !important;
+}
+
+/* Page transition: monitor-flicker flash */
+::view-transition-old(root) {
+  animation: 160ms ease-in both vt-out;
+}
+::view-transition-new(root) {
+  animation: 220ms ease-out 160ms both vt-in;
+}
+
+@keyframes vt-out {
+  0%   { opacity: 1; filter: brightness(1); }
+  60%  { opacity: 1; filter: brightness(2.5); }
+  100% { opacity: 0; filter: brightness(0); }
+}
+
+@keyframes vt-in {
+  0%   { opacity: 0; filter: brightness(0); }
+  40%  { opacity: 0.8; filter: brightness(2.5); }
+  100% { opacity: 1; filter: brightness(1); }
+}
+
+@keyframes textPulse {
+  0%, 100% {
+    color: var(--foreground);
+  }
+  25% {
+    color: var(--secondary);
+  }
+  50% {
+    color: var(--primary-foreground);
+  }
+  75% {
+    color: var(--accent-foreground);
+  }
 }
