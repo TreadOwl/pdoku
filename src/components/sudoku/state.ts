@@ -98,7 +98,7 @@ export function reducer(state: GameState, action: Action): GameState {
         state.focusedCell !== null &&
         state.givens[state.focusedCell] === null &&
         !state.hintLocked[state.focusedCell] &&
-        state.userCells[state.focusedCell] !== next
+        state.userCells[state.focusedCell] === null
       ) {
         const idx = state.focusedCell
         const prev = state.userCells[idx]
@@ -125,7 +125,7 @@ export function reducer(state: GameState, action: Action): GameState {
       const idx = action.idx
       const givenHere = state.givens[idx] !== null
       const lockedByHint = state.hintLocked[idx]
-      const canPaint = !givenHere && !lockedByHint && state.selectedColor !== null
+      const canPaint = !givenHere && !lockedByHint && state.selectedColor !== null && state.userCells[idx] === null
 
       if (!canPaint) {
         if (state.focusedCell === idx) return state

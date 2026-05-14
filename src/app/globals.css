@@ -143,6 +143,12 @@ body {
     transparent 0px 2px,
     oklch(0 0 0 / 0.07) 2px 4px
   );
+  animation: scan-roll 2s linear infinite;
+}
+
+@keyframes scan-roll {
+  from { background-position-y: 0; }
+  to   { background-position-y: 8px; }
 }
 
 /* Edge vignette */
