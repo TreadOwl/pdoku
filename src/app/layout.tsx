@@ -3,6 +3,7 @@ import { VT323 } from 'next/font/google'
 import { ViewTransitions } from 'next-view-transitions'
 import './globals.css'
 import { cn } from '@/lib/utils'
+import { ScanLines } from '@/components/scan-lines'
 
 const vt323 = VT323({ subsets: ['latin'], variable: '--font-sans', weight: '400' })
 
@@ -23,7 +24,7 @@ export default function RootLayout({
     <ViewTransitions>
       <html lang="en" className={cn('h-full', vt323.className)}>
         <body className="h-full flex flex-col">
-          <div aria-hidden="true" className="scan-lines" />
+          <ScanLines />
           <div aria-hidden="true" className="vignette" />
           {children}
         </body>

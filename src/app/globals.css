@@ -132,28 +132,7 @@ body {
   }
 }
 
-/* CRT scan-line overlay */
-.scan-lines {
-  position: fixed;
-  top: -8px;
-  left: 0;
-  right: 0;
-  bottom: -8px;
-  z-index: 9999;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent 0px 2px,
-    oklch(0 0 0 / 0.07) 2px 4px
-  );
-  will-change: transform;
-  animation: scan-roll 1s linear infinite;
-}
-
-@keyframes scan-roll {
-  from { transform: translateY(0); }
-  to   { transform: translateY(8px); }
-}
+/* CRT scan-line overlay — rendered via canvas (scan-lines.tsx) for pixel-perfect DPR alignment */
 
 /* Edge vignette */
 .vignette {
