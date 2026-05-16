@@ -81,8 +81,8 @@ export function SettingsModal({ open, onClose, settings, onSettingsChange }: Pro
 
         <div className="flex flex-col gap-5">
           <SettingRow
-            label="Keep color selected"
-            description="Keep the same color selected after placing it"
+            label="Keep Color Selected"
+            description="Keep a color selected, allowing continuous placement"
             checked={settings.colorFillEnabled}
             onChange={(v) => onSettingsChange({ ...settings, colorFillEnabled: v })}
           />

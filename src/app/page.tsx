@@ -1,22 +1,17 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { useTransitionRouter } from 'next-view-transitions'
 import { GithubLogoIcon } from '@phosphor-icons/react'
 import { StatDrawer } from '@/components/stat-drawer'
 import { SettingsModal } from '@/components/settings-modal'
-import { loadSettings, saveSettings, type Settings } from '@/lib/settings'
+import { useSettings } from '@/hooks/use-settings'
 
 export default function Home() {
   const router = useTransitionRouter()
-  const [settings, setSettings] = useState<Settings>({ colorFillEnabled: false })
+  const [settings, updateSettings] = useSettings()
   const [settingsOpen, setSettingsOpen] = useState(false)
-
-  useEffect(() => {
-    const id = setTimeout(() => setSettings(loadSettings()), 0)
-    return () => clearTimeout(id)
-  }, [])
 
   return (
     <main className="h-full flex flex-col gap-12 items-center justify-center">
@@ -56,10 +51,7 @@ export default function Home() {
         open={settingsOpen}
         onClose={() => setSettingsOpen(false)}
         settings={settings}
-        onSettingsChange={(s) => {
-          setSettings(s)
-          saveSettings(s)
-        }}
+        onSettingsChange={updateSettings}
       />
       <h4 className="absolute bottom-12 text-sm text-secondary inline-flex gap-2 items-center">
         @ 2026, by{' '}

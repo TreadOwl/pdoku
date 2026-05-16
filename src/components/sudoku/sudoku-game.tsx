@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useReducer, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import { Settings as SettingsIcon } from 'lucide-react'
 import { clearMatch, recordFinish, saveMatch, STARTING_HINTS, type SavedMatch } from '@/lib/sudoku'
-import { loadSettings, saveSettings, type Settings } from '@/lib/settings'
+import { useSettings } from '@/hooks/use-settings'
 import { SettingsModal } from '@/components/settings-modal'
 import { Board } from './board'
 import { ColorPalette } from './color-palette'
@@ -28,13 +28,8 @@ type Props = {
 export function SudokuGame({ initial, onNewGame }: Props) {
   const [state, dispatch] = useReducer(reducer, initial, fromSavedMatch)
   const recordedRef = useRef(false)
-  const [settings, setSettings] = useState<Settings>({ colorFillEnabled: false })
+  const [settings, updateSettings] = useSettings()
   const [settingsOpen, setSettingsOpen] = useState(false)
-
-  useEffect(() => {
-    const id = setTimeout(() => setSettings(loadSettings()), 0)
-    return () => clearTimeout(id)
-  }, [])
 
   useEffect(() => {
     if (state.status === 'won') return
@@ -64,10 +59,26 @@ export function SudokuGame({ initial, onNewGame }: Props) {
     }
   }, [state.status, state.difficulty, state.elapsedSeconds, state.hintsRemaining])
 
-  const errorCells = computeErrorCells(state)
-  const focusedUnit = computeFocusUnit(state.focusedCell)
-  const sameColorCells = computeSameColorCells(state)
-  const exhaustedColors = computeExhaustedColors(state.givens, state.userCells)
+  const errorCells = useMemo(
+    () => computeErrorCells(state.userCells, state.givens, state.solution),
+    [state.userCells, state.givens, state.solution],
+  )
+  const focusedUnit = useMemo(() => computeFocusUnit(state.focusedCell), [state.focusedCell])
+  const sameColorCells = useMemo(
+    () => computeSameColorCells(state.focusedCell, state.selectedColor, state.userCells, state.givens),
+    [state.focusedCell, state.selectedColor, state.userCells, state.givens],
+  )
+  const exhaustedColors = useMemo(
+    () => computeExhaustedColors(state.givens, state.userCells),
+    [state.givens, state.userCells],
+  )
+
+  const handleCellTap = useCallback(
+    (idx: number) => {
+      dispatch({ type: 'CELL_TAP', idx, keepSelection: settings.colorFillEnabled })
+    },
+    [settings.colorFillEnabled],
+  )
 
   const handleRootClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -102,7 +113,7 @@ export function SudokuGame({ initial, onNewGame }: Props) {
         focusedUnit={focusedUnit}
         errorCells={errorCells}
         sameColorCells={sameColorCells}
-        onCellTap={(idx) => dispatch({ type: 'CELL_TAP', idx, keepSelection: settings.colorFillEnabled })}
+        onCellTap={handleCellTap}
       />
       <ColorPalette
         selectedColor={state.selectedColor}
@@ -129,10 +140,7 @@ export function SudokuGame({ initial, onNewGame }: Props) {
         open={settingsOpen}
         onClose={() => setSettingsOpen(false)}
         settings={settings}
-        onSettingsChange={(s) => {
-          setSettings(s)
-          saveSettings(s)
-        }}
+        onSettingsChange={updateSettings}
       />
     </main>
   )

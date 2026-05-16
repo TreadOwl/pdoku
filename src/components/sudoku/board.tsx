@@ -12,7 +12,16 @@ type Props = {
   onCellTap: (idx: number) => void
 }
 
-export function Board({ givens, userCells, hintLocked, focusedCell, focusedUnit, errorCells, sameColorCells, onCellTap }: Props) {
+export function Board({
+  givens,
+  userCells,
+  hintLocked,
+  focusedCell,
+  focusedUnit,
+  errorCells,
+  sameColorCells,
+  onCellTap,
+}: Props) {
   return (
     <div
       className="grid grid-cols-9 w-full max-w-[min(92vw,32rem)] border-2 border-board-line-strong"

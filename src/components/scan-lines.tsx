@@ -13,7 +13,7 @@ export function ScanLines() {
 
     const dpr = window.devicePixelRatio || 1
     const periodCss = 4 // 2px transparent + 2px dark
-    const speedCss = 8  // CSS px per second
+    const speedCss = 8 // CSS px per second
 
     let offset = 0
     let rafId: number

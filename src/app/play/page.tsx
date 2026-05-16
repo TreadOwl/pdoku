@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useTransitionRouter } from 'next-view-transitions'
-import { loadMatch, type SavedMatch } from '@/lib/sudoku'
+import { clearMatch, loadMatch, type SavedMatch } from '@/lib/sudoku'
 import { formatTime } from '@/components/sudoku/state'
 
 const difficulties = [
@@ -52,7 +52,10 @@ export default function PlayPage() {
               key={value}
               className={`text-2xl py-2 px-4 font-semibold cursor-pointer border-3 btn-pixel
             hover:bg-secondary hover:border-primary hover:text-primary`}
-              onClick={() => router.push(`/play/sudoku?difficulty=${value}&new=1`)}
+              onClick={() => {
+                clearMatch()
+                router.push(`/play/sudoku?difficulty=${value}`)
+              }}
             >
               {name}
             </button>

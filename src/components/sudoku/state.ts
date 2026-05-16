@@ -110,7 +110,7 @@ export function reducer(state: GameState, action: Action): GameState {
           newColor: next,
         })
         const status: Status = hasWon(state.givens, userCells, state.solution) ? 'won' : 'playing'
-        const selectedColor = !action.keepSelection ? null : colorCount(state.givens, userCells, next) >= 9 ? null : next
+        const selectedColor = retainColor(next, action.keepSelection, state.givens, userCells)
         return { ...state, selectedColor, focusedCell: null, userCells, undoStack, status }
       }
       return { ...state, selectedColor: next }
@@ -133,22 +133,12 @@ export function reducer(state: GameState, action: Action): GameState {
       }
 
       const newColor = state.selectedColor as Color
-      const prev = state.userCells[idx]
-      if (prev === newColor) {
-        if (state.focusedCell === idx) return state
-        return { ...state, focusedCell: idx }
-      }
-
       const userCells = state.userCells.slice()
       userCells[idx] = newColor
-      const undoStack = state.undoStack.concat({
-        cell: idx,
-        prevColor: prev,
-        newColor,
-      })
+      const undoStack = state.undoStack.concat({ cell: idx, prevColor: null, newColor })
 
       const status: Status = hasWon(state.givens, userCells, state.solution) ? 'won' : 'playing'
-      const selectedColor = !action.keepSelection ? null : colorCount(state.givens, userCells, newColor) >= 9 ? null : state.selectedColor
+      const selectedColor = retainColor(newColor, action.keepSelection, state.givens, userCells)
       return {
         ...state,
         selectedColor,
@@ -170,7 +160,7 @@ export function reducer(state: GameState, action: Action): GameState {
         userCells,
         undoStack: state.undoStack.slice(0, -1),
         undosRemaining: state.undosRemaining !== null ? state.undosRemaining - 1 : null,
-        focusedCell: top.cell,
+        focusedCell: null,
       }
     }
 
@@ -219,6 +209,11 @@ function colorCount(givens: Board, userCells: Board, color: Color): number {
   return n
 }
 
+function retainColor(color: Color, keep: boolean, givens: Board, userCells: Board): Color | null {
+  if (!keep) return null
+  return colorCount(givens, userCells, color) >= 9 ? null : color
+}
+
 export function computeExhaustedColors(givens: Board, userCells: Board): Set<Color> {
   const counts = new Array(10).fill(0)
   for (let i = 0; i < 81; i++) {
@@ -232,9 +227,8 @@ export function computeExhaustedColors(givens: Board, userCells: Board): Set<Col
   return out
 }
 
-export function computeErrorCells(state: GameState): Set<number> {
+export function computeErrorCells(userCells: Board, givens: Board, solution: Solution): Set<number> {
   const errors = new Set<number>()
-  const { givens, userCells, solution } = state
   let board: Board | null = null
   for (let i = 0; i < 81; i++) {
     const v = userCells[i]
@@ -247,14 +241,21 @@ export function computeErrorCells(state: GameState): Set<number> {
   return errors
 }
 
-export function computeSameColorCells(state: GameState): Set<number> {
+export function computeSameColorCells(
+  focusedCell: number | null,
+  selectedColor: Color | null,
+  userCells: Board,
+  givens: Board,
+): Set<number> {
   const out = new Set<number>()
-  if (state.focusedCell === null) return out
-  const focusedColor = state.givens[state.focusedCell] ?? state.userCells[state.focusedCell]
-  if (focusedColor === null) return out
+  const focusedColor = focusedCell !== null ? (givens[focusedCell] ?? userCells[focusedCell]) : null
+  const activeColor = focusedColor ?? selectedColor
+  if (activeColor === null) return out
+
   for (let i = 0; i < 81; i++) {
-    if (i === state.focusedCell) continue
-    if ((state.givens[i] ?? state.userCells[i]) === focusedColor) out.add(i)
+    if (i === focusedCell) continue
+    const c = givens[i] ?? userCells[i]
+    if (c === activeColor) out.add(i)
   }
   return out
 }

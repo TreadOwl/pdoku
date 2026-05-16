@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import type { Cell as CellType } from '@/lib/sudoku'
 import { cn } from '@/lib/utils'
 import { COLOR_BG, ColorShape, SHAPE_CLASS } from './color-shape'
@@ -13,7 +14,16 @@ type Props = {
   onTap: (idx: number) => void
 }
 
-export function Cell({ idx, color, isHintLocked, isFocused, inFocusedUnit, isError, isSameColor, onTap }: Props) {
+export const Cell = memo(function Cell({
+  idx,
+  color,
+  isHintLocked,
+  isFocused,
+  inFocusedUnit,
+  isError,
+  isSameColor,
+  onTap,
+}: Props) {
   const col = idx % 9
   const row = Math.floor(idx / 9)
   const rightStrong = col === 2 || col === 5
@@ -48,8 +58,10 @@ export function Cell({ idx, color, isHintLocked, isFocused, inFocusedUnit, isErr
       {isFocused && (
         <span className="pointer-events-none absolute inset-0 shadow-[inset_0_0_0_3px_var(--cell-focus-ring)]" />
       )}
-      {isSameColor && !isError && <span className="pointer-events-none absolute inset-0 shadow-[inset_0_0_0_3px_var(--foreground)]" />}
+      {isSameColor && !isError && (
+        <span className="pointer-events-none absolute inset-0 shadow-[inset_0_0_0_3px_var(--foreground)]" />
+      )}
       {isError && <span className="pointer-events-none absolute inset-0 shadow-[inset_0_0_0_3px_var(--cell-error)]" />}
     </button>
   )
-}
+})
