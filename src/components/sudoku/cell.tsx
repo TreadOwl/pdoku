@@ -9,10 +9,11 @@ type Props = {
   isFocused: boolean
   inFocusedUnit: boolean
   isError: boolean
+  isSameColor: boolean
   onTap: (idx: number) => void
 }
 
-export function Cell({ idx, color, isHintLocked, isFocused, inFocusedUnit, isError, onTap }: Props) {
+export function Cell({ idx, color, isHintLocked, isFocused, inFocusedUnit, isError, isSameColor, onTap }: Props) {
   const col = idx % 9
   const row = Math.floor(idx / 9)
   const rightStrong = col === 2 || col === 5
@@ -47,6 +48,7 @@ export function Cell({ idx, color, isHintLocked, isFocused, inFocusedUnit, isErr
       {isFocused && (
         <span className="pointer-events-none absolute inset-0 shadow-[inset_0_0_0_3px_var(--cell-focus-ring)]" />
       )}
+      {isSameColor && !isError && <span className="pointer-events-none absolute inset-0 shadow-[inset_0_0_0_3px_var(--foreground)]" />}
       {isError && <span className="pointer-events-none absolute inset-0 shadow-[inset_0_0_0_3px_var(--cell-error)]" />}
     </button>
   )

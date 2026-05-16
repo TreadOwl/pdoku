@@ -8,10 +8,11 @@ type Props = {
   focusedCell: number | null
   focusedUnit: Set<number>
   errorCells: Set<number>
+  sameColorCells: Set<number>
   onCellTap: (idx: number) => void
 }
 
-export function Board({ givens, userCells, hintLocked, focusedCell, focusedUnit, errorCells, onCellTap }: Props) {
+export function Board({ givens, userCells, hintLocked, focusedCell, focusedUnit, errorCells, sameColorCells, onCellTap }: Props) {
   return (
     <div
       className="grid grid-cols-9 w-full max-w-[min(92vw,32rem)] border-2 border-board-line-strong"
@@ -28,6 +29,7 @@ export function Board({ givens, userCells, hintLocked, focusedCell, focusedUnit,
             isFocused={focusedCell === i}
             inFocusedUnit={focusedUnit.has(i)}
             isError={errorCells.has(i)}
+            isSameColor={sameColorCells.has(i)}
             onTap={onCellTap}
           />
         )

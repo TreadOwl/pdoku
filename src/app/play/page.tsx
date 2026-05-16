@@ -52,7 +52,7 @@ export default function PlayPage() {
               key={value}
               className={`text-2xl py-2 px-4 font-semibold cursor-pointer border-3 btn-pixel
             hover:bg-secondary hover:border-primary hover:text-primary`}
-              onClick={() => router.push(`/play/sudoku?difficulty=${value}`)}
+              onClick={() => router.push(`/play/sudoku?difficulty=${value}&new=1`)}
             >
               {name}
             </button>

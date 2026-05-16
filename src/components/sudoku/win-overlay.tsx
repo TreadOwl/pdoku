@@ -1,3 +1,6 @@
+'use client'
+
+import { useTransitionRouter } from 'next-view-transitions'
 import { formatTime } from './state'
 
 type Props = {
@@ -8,6 +11,8 @@ type Props = {
 }
 
 export function WinOverlay({ elapsedSeconds, difficulty, hintsUsed, onNewGame }: Props) {
+  const router = useTransitionRouter()
+
   return (
     <div
       className="absolute inset-0 z-10 flex items-center justify-center bg-background/90 animate-in fade-in duration-300"
@@ -29,16 +34,28 @@ export function WinOverlay({ elapsedSeconds, difficulty, hintsUsed, onNewGame }:
             <dd className="font-semibold tabular-nums">{hintsUsed}</dd>
           </div>
         </dl>
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation()
-            onNewGame()
-          }}
-          className="cursor-pointer border-2 border-foreground px-6 py-2 text-lg font-semibold btn-pixel hover:bg-secondary hover:text-primary"
-        >
-          New Game
-        </button>
+        <div className="flex gap-4">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation()
+              onNewGame()
+            }}
+            className="flex-1 cursor-pointer border-2 border-foreground px-6 py-2 text-lg font-semibold btn-pixel hover:bg-secondary hover:text-primary"
+          >
+            Play Again
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation()
+              router.push('/play')
+            }}
+            className="flex-1 cursor-pointer border-2 border-foreground px-6 py-2 text-lg font-semibold btn-pixel hover:bg-secondary hover:text-primary"
+          >
+            Return
+          </button>
+        </div>
       </div>
     </div>
   )

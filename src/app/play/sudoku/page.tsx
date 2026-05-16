@@ -40,6 +40,7 @@ function buildSavedMatch(puzzle: Puzzle): SavedMatch {
 function SudokuRoute() {
   const params = useSearchParams()
   const difficulty = parseDifficulty(params.get('difficulty'))
+  const isNewGame = params.get('new') === '1'
   const [initial, setInitial] = useState<SavedMatch | null>(null)
   const [regenToken, setRegenToken] = useState(0)
 
@@ -47,7 +48,7 @@ function SudokuRoute() {
     let cancelled = false
     const id = setTimeout(() => {
       if (cancelled) return
-      const saved = regenToken === 0 ? loadMatch() : null
+      const saved = regenToken === 0 && !isNewGame ? loadMatch() : null
       if (saved && saved.difficulty === difficulty) {
         setInitial(saved)
       } else {
@@ -60,7 +61,7 @@ function SudokuRoute() {
       cancelled = true
       clearTimeout(id)
     }
-  }, [difficulty, regenToken])
+  }, [difficulty, regenToken, isNewGame])
 
   const handleNewGame = useCallback(() => {
     clearMatch()

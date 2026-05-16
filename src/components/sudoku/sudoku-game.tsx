@@ -1,7 +1,10 @@
 'use client'
 
-import { useEffect, useReducer, useRef } from 'react'
+import { useEffect, useReducer, useRef, useState } from 'react'
+import { Settings as SettingsIcon } from 'lucide-react'
 import { clearMatch, recordFinish, saveMatch, STARTING_HINTS, type SavedMatch } from '@/lib/sudoku'
+import { loadSettings, saveSettings, type Settings } from '@/lib/settings'
+import { SettingsModal } from '@/components/settings-modal'
 import { Board } from './board'
 import { ColorPalette } from './color-palette'
 import { Controls } from './controls'
@@ -10,6 +13,7 @@ import {
   computeErrorCells,
   computeExhaustedColors,
   computeFocusUnit,
+  computeSameColorCells,
   formatTime,
   fromSavedMatch,
   reducer,
@@ -24,6 +28,13 @@ type Props = {
 export function SudokuGame({ initial, onNewGame }: Props) {
   const [state, dispatch] = useReducer(reducer, initial, fromSavedMatch)
   const recordedRef = useRef(false)
+  const [settings, setSettings] = useState<Settings>({ colorFillEnabled: false })
+  const [settingsOpen, setSettingsOpen] = useState(false)
+
+  useEffect(() => {
+    const id = setTimeout(() => setSettings(loadSettings()), 0)
+    return () => clearTimeout(id)
+  }, [])
 
   useEffect(() => {
     if (state.status === 'won') return
@@ -55,6 +66,7 @@ export function SudokuGame({ initial, onNewGame }: Props) {
 
   const errorCells = computeErrorCells(state)
   const focusedUnit = computeFocusUnit(state.focusedCell)
+  const sameColorCells = computeSameColorCells(state)
   const exhaustedColors = computeExhaustedColors(state.givens, state.userCells)
 
   const handleRootClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -70,7 +82,17 @@ export function SudokuGame({ initial, onNewGame }: Props) {
         onClick={(e) => e.stopPropagation()}
       >
         <span className="text-2xl font-semibold capitalize text-secondary">{state.difficulty}</span>
-        <span className="text-2xl font-semibold tabular-nums">{formatTime(state.elapsedSeconds)}</span>
+        <div className="flex items-center gap-3">
+          <span className="text-2xl font-semibold tabular-nums">{formatTime(state.elapsedSeconds)}</span>
+          <button
+            type="button"
+            onClick={() => setSettingsOpen(true)}
+            className="cursor-pointer opacity-70 hover:opacity-100 transition-opacity duration-150"
+            aria-label="Settings"
+          >
+            <SettingsIcon size={20} />
+          </button>
+        </div>
       </div>
       <Board
         givens={state.givens}
@@ -79,12 +101,13 @@ export function SudokuGame({ initial, onNewGame }: Props) {
         focusedCell={state.focusedCell}
         focusedUnit={focusedUnit}
         errorCells={errorCells}
-        onCellTap={(idx) => dispatch({ type: 'CELL_TAP', idx })}
+        sameColorCells={sameColorCells}
+        onCellTap={(idx) => dispatch({ type: 'CELL_TAP', idx, keepSelection: settings.colorFillEnabled })}
       />
       <ColorPalette
         selectedColor={state.selectedColor}
         exhaustedColors={exhaustedColors}
-        onSelect={(c) => dispatch({ type: 'SELECT_COLOR', color: c })}
+        onSelect={(c) => dispatch({ type: 'SELECT_COLOR', color: c, keepSelection: settings.colorFillEnabled })}
       />
       <Controls
         hintsRemaining={state.hintsRemaining}
@@ -102,6 +125,15 @@ export function SudokuGame({ initial, onNewGame }: Props) {
           onNewGame={onNewGame}
         />
       )}
+      <SettingsModal
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        settings={settings}
+        onSettingsChange={(s) => {
+          setSettings(s)
+          saveSettings(s)
+        }}
+      />
     </main>
   )
 }

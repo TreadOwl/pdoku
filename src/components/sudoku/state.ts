@@ -28,8 +28,8 @@ export type GameState = {
 }
 
 export type Action =
-  | { type: 'SELECT_COLOR'; color: Color }
-  | { type: 'CELL_TAP'; idx: number }
+  | { type: 'SELECT_COLOR'; color: Color; keepSelection: boolean }
+  | { type: 'CELL_TAP'; idx: number; keepSelection: boolean }
   | { type: 'CLEAR_SELECTION' }
   | { type: 'USE_HINT' }
   | { type: 'UNDO' }
@@ -110,8 +110,8 @@ export function reducer(state: GameState, action: Action): GameState {
           newColor: next,
         })
         const status: Status = hasWon(state.givens, userCells, state.solution) ? 'won' : 'playing'
-        const selectedColor = colorCount(state.givens, userCells, next) >= 9 ? null : next
-        return { ...state, selectedColor, userCells, undoStack, status }
+        const selectedColor = !action.keepSelection ? null : colorCount(state.givens, userCells, next) >= 9 ? null : next
+        return { ...state, selectedColor, focusedCell: null, userCells, undoStack, status }
       }
       return { ...state, selectedColor: next }
     }
@@ -148,13 +148,13 @@ export function reducer(state: GameState, action: Action): GameState {
       })
 
       const status: Status = hasWon(state.givens, userCells, state.solution) ? 'won' : 'playing'
-      const selectedColor = colorCount(state.givens, userCells, newColor) >= 9 ? null : state.selectedColor
+      const selectedColor = !action.keepSelection ? null : colorCount(state.givens, userCells, newColor) >= 9 ? null : state.selectedColor
       return {
         ...state,
         selectedColor,
         userCells,
         undoStack,
-        focusedCell: idx,
+        focusedCell: null,
         status,
       }
     }
@@ -245,6 +245,18 @@ export function computeErrorCells(state: GameState): Set<number> {
     for (const j of findConflictCells(board, i, v)) errors.add(j)
   }
   return errors
+}
+
+export function computeSameColorCells(state: GameState): Set<number> {
+  const out = new Set<number>()
+  if (state.focusedCell === null) return out
+  const focusedColor = state.givens[state.focusedCell] ?? state.userCells[state.focusedCell]
+  if (focusedColor === null) return out
+  for (let i = 0; i < 81; i++) {
+    if (i === state.focusedCell) continue
+    if ((state.givens[i] ?? state.userCells[i]) === focusedColor) out.add(i)
+  }
+  return out
 }
 
 export function computeFocusUnit(focusedCell: number | null): Set<number> {
