@@ -21,6 +21,10 @@ Nine colored swatches sit below the board. Two orthogonal pieces of state compos
 
 Tapping a swatch selects that color (tapping the same swatch deselects it). Tapping any cell focuses it. If a color is selected when you tap an **empty** cell, the color is placed immediately. If an empty cell is focused and you tap a swatch, the cell is filled in that single swatch tap — skipping the two-step flow.
 
+After a placement, `focusedCell` is always cleared. By default, `selectedColor` is also cleared, so each move requires re-selecting a color. The **Keep Color Selected** setting (see Settings below) changes this: the selected color persists after each placement, enabling rapid multi-cell fills with a single swatch tap.
+
+**Same-color highlighting.** Focusing a filled cell highlights all other cells carrying the same color with an inset border — useful for tracking how many of a given color remain. Selecting a swatch without a focused cell produces the same highlight for that color. The focused cell's color always takes priority: if a focused cell's color differs from the selected swatch, only the focused cell's color is highlighted.
+
 **Placements are permanent.** Once a cell contains a color (player-placed or hint-placed), it cannot be overwritten by tapping or swatch selection. The only way to reverse a placement is undo. This design makes every move deliberate and keeps the undo budget meaningful at higher difficulties — if overwriting were allowed, the undo limit would be trivially circumventable by cycling colors.
 
 Tapping outside the board and palette clears both `selectedColor` and `focusedCell`.
@@ -49,7 +53,7 @@ The budget decrements only when a cell is actually filled. If no eligible empty 
 
 ## Undo
 
-Each player placement pushes an entry `{ cell, prevColor, newColor }` onto an undo stack. `UNDO` pops the top entry and restores `prevColor` to that cell. Hint placements do not push entries. Pressing undo on an empty stack is a no-op — no budget is consumed. The counter next to the button shows remaining undos.
+Each player placement pushes an entry `{ cell, prevColor, newColor }` onto an undo stack. `UNDO` pops the top entry and restores `prevColor` to that cell, and also clears `focusedCell`. Hint placements do not push entries. Pressing undo on an empty stack is a no-op — no budget is consumed. The counter next to the button shows remaining undos.
 
 ---
 
@@ -78,6 +82,8 @@ All puzzles across all difficulties are guaranteed to have exactly one solution,
 
 An in-progress game serializes to `localStorage` on every state change under the key `pixeldoku:active-match`. The payload stores the full board state (givens, solution, userCells, hintLocked flags), the undo stack, hint and undo budgets, and elapsed seconds. On loading `/play/sudoku?difficulty=…`, the saved match is resumed if the difficulty matches; otherwise a fresh puzzle is generated on the main thread behind a loading screen.
 
+Choosing a difficulty from `/play` clears the saved match before navigation — so picking a difficulty always starts fresh. Refreshing the game page mid-puzzle resumes the saved state, not a blank board.
+
 The timer counts elapsed seconds and is gated on `!document.hidden` — backgrounding the tab pauses it automatically.
 
 ---
@@ -90,6 +96,25 @@ Completed games are appended to `localStorage` under `pixeldoku:stats`. The stat
 - Best completion time overall and per difficulty
 - Favorite difficulty (most completions)
 - Total time played across all finished games
+
+---
+
+## Settings
+
+A settings overlay is accessible from both the home screen and the in-game header (gear icon to the right of the timer). Settings persist to `localStorage` under `pixeldoku:settings`.
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| Keep Color Selected | Off | When on, the selected color persists after each placement, allowing rapid multi-cell fills. When off, the selection clears after every move. |
+
+---
+
+## Win screen
+
+On completing a puzzle, an overlay shows elapsed time, difficulty, and hints used. Two buttons are presented:
+
+- **Play Again** — generates a fresh puzzle of the same difficulty.
+- **Return** — navigates back to the difficulty select screen.
 
 ---
 
