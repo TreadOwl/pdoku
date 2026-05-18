@@ -68,6 +68,7 @@ const DIFFICULTY_ORDER: readonly Difficulty[] = ['easy', 'medium', 'hard', 'extr
 export type StatsSummary = {
   started: number
   finished: number
+  finishedByDifficulty: Record<Difficulty, number>
   bestTimeByDifficulty: Record<Difficulty, number | null>
   bestOverall: { difficulty: Difficulty; time: number } | null
   favoriteDifficulty: Difficulty | null
@@ -114,6 +115,7 @@ export function summarize(stats: Stats): StatsSummary {
   return {
     started: stats.started,
     finished: stats.matches.length,
+    finishedByDifficulty: countByDifficulty,
     bestTimeByDifficulty,
     bestOverall,
     favoriteDifficulty,
