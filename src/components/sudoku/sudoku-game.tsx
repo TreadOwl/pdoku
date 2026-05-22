@@ -133,6 +133,7 @@ export function SudokuGame({ initial, onNewGame }: Props) {
           elapsedSeconds={state.elapsedSeconds}
           difficulty={state.difficulty}
           hintsUsed={STARTING_HINTS - state.hintsRemaining}
+          undosUsed={state.undosUsed}
           onNewGame={onNewGame}
         />
       )}

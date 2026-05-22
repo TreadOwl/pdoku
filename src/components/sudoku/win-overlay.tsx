@@ -7,10 +7,11 @@ type Props = {
   elapsedSeconds: number
   difficulty: string
   hintsUsed: number
+  undosUsed: number
   onNewGame: () => void
 }
 
-export function WinOverlay({ elapsedSeconds, difficulty, hintsUsed, onNewGame }: Props) {
+export function WinOverlay({ elapsedSeconds, difficulty, hintsUsed, undosUsed, onNewGame }: Props) {
   const router = useTransitionRouter()
 
   return (
@@ -28,6 +29,10 @@ export function WinOverlay({ elapsedSeconds, difficulty, hintsUsed, onNewGame }:
           <div className="flex gap-2 text-sm uppercase tracking-wider">
             <dt className="opacity-70">Time</dt>
             <dd className="font-semibold tabular-nums">{formatTime(elapsedSeconds)}</dd>
+          </div>
+          <div className="flex gap-2 text-sm uppercase tracking-wider">
+            <dt className="opacity-70">Undoes used</dt>
+            <dd className="font-semibold tabular-nums">{undosUsed}</dd>
           </div>
           <div className="flex gap-2 text-sm uppercase tracking-wider">
             <dt className="opacity-70">Hints used</dt>

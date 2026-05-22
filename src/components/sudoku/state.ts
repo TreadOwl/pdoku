@@ -20,6 +20,7 @@ export type GameState = {
   undoStack: UndoEntry[]
   hintsRemaining: number
   undosRemaining: number | null
+  undosUsed: number
   elapsedSeconds: number
   startedAt: number
   selectedColor: Color | null
@@ -45,6 +46,7 @@ export function fromSavedMatch(saved: SavedMatch): GameState {
     undoStack: saved.undoStack,
     hintsRemaining: saved.hintsRemaining,
     undosRemaining: saved.undosRemaining,
+    undosUsed: 0,
     elapsedSeconds: saved.elapsedSeconds,
     startedAt: saved.startedAt,
     selectedColor: null,
@@ -160,6 +162,8 @@ export function reducer(state: GameState, action: Action): GameState {
         userCells,
         undoStack: state.undoStack.slice(0, -1),
         undosRemaining: state.undosRemaining !== null ? state.undosRemaining - 1 : null,
+        undosUsed: state.undosUsed + 1,
+        selectedColor: null,
         focusedCell: null,
       }
     }
